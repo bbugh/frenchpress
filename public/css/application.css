@@ -1,0 +1,21 @@
+.row {
+  margin-bottom: 1em;
+}
+
+.label {
+  font-weight: bold;
+}
+
+#diff {
+  font-family: monospace;
+  border: 1px solid black;
+  padding: 8px;
+  overflow: scroll;
+}
+
+#diff .change {
+  background-color: #FFDBDC; /* github red */
+}
+
+/* wbr hack for IE8 */
+.wbr:before { content: "\200B" }

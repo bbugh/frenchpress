@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <title>French Press</title>
+    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/application.css">
+  </head>
+  <body>
+    <p>
+      <strong>Function:</strong> Remove extra whitespace after periods in sentences.
+    </p>
+
+    <div class="row">
+      <p class="label">Input</p>
+
+      <form id="dataform">
+        <textarea id="content" name="content" rows="10" cols="80">This is a text.       Sentence.       With a lot of extra.  White space.  Between sentences.     Run to remove whitespace.   Quickly.    </textarea>
+        <br/>
+        <input type="submit" id="submit" value="Run French Press" />
+      </form>
+    </div>
+
+    <div class="row">
+      <p class="label">Result</p>
+
+      <textarea id="result" name="result" rows="10" cols="80" readonly></textarea>
+    </div>
+
+    <div class="row">
+      <p class="label">Diff</p>
+
+      <pre id="diff">
+        Diff will appear here.
+      </pre>
+    </div>
+
+    <script>
+      function createDiff(original, hunks) {
+        var result = '';
+        var lastIndex = 0;
+
+        if ($.isArray(hunks) && hunks.length > 0) {
+          while (hunks.length > 0) {
+            next = hunks.shift();
+
+            result += original.slice(lastIndex, next[0]);
+
+            result += '<span class="change">' + original.slice(next[0], next[1]).replace(/[^\S\r\n]/g, "&nbsp;<wbr/>") + '</span>'
+
+            lastIndex = next[1];
+          }
+
+          result += original.slice(lastIndex);
+        } else {
+          result = original;
+        }
+
+        return result;
+      }
+
+      $("#dataform").submit(function(event){
+        event.preventDefault();
+
+        $.post('/frenchpress', $(this).serialize(), function(data) {
+          $("#result").val(data['result']);
+          $("#diff").html(createDiff(data['original'],data['hunks']));
+        });
+      });
+    </script>
+
+  </body>
+</html>
